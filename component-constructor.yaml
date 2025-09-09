@@ -1,0 +1,81 @@
+# yaml-language-server: $schema=https://ocm.software/schemas/configuration-schema.yaml
+# -- product component
+components:
+  - name: ocm.software/cap-sflight
+    version: 0.1.1
+    provider:
+      name: sap.com
+    componentReferences:
+      - name: frontend
+        componentName: github.com/vasil-kurdov/cap-sflight/travel-processor-ui
+        version: 0.1.1
+      - name: backend
+        componentName: github.com/vasil-kurdov/cap-sflight/sflight-travel-processor-srv
+        version: 0.1.0
+    sources:
+      - access:
+          commit: 128e6414bebe296b41c55c4e0df1918c0d09ca3c
+          ref: refs/heads/main
+          repoUrl: https://github.com/vasil-kurdov/ocm-cap-sflight
+          type: github
+        name: github_com_open_component_model_ocm_cap_sflight
+        type: git
+        version: 1.0.0
+
+  # -- frontend component
+  - name: github.com/vasil-kurdov/cap-sflight/travel-processor-ui
+    version: 0.1.1
+    provider:
+      name: sap.com
+    resources:
+      - name: travel-processor-ui-image
+        version: 0.1.0
+        type: ociImage
+        relation: local
+        access:
+          type: ociArtifact
+          imageReference: ghcr.io/vasil-kurdov/sflight-travel-processor-ui@sha256:e87c6a81bcc076a79fee523dd2253aa965bea9178593d8a82dd8d161302c46e6
+        labels:
+          - name: org.opencontainers.image.source
+            value: https://github.com/vasil-kurdov/ocm-cap-sflight
+          - name: app
+            value: travel-processor-ui
+          - name: ocm.software/platform
+            value: linux/amd64
+      - name: travel-processor-ui-sbom
+        version: 0.1.1
+        type: sbom
+        relation: local
+        input:
+          type: file
+          path: ./sbom/cap_sflight_ui.cyclonedx.json
+          mediaType: application/json
+
+  # -- backend component
+  - name: github.com/vasil-kurdov/cap-sflight/sflight-travel-processor-srv
+    version: 0.1.0
+    provider:
+      name: sap.com
+    resources:
+      - name: travel-processor-srv-image
+        version: 0.1.0
+        type: ociImage
+        relation: local
+        access:
+          type: ociArtifact
+          imageReference: ghcr.io/vasil-kurdov/sflight-travel-processor-srv@sha256:c83559db028abb92332610daefed389b1179078d3cf15ef43e74f3340e5be67a
+        labels:
+          - name: org.opencontainers.image.source
+            value: https://github.com/vasil-kurdov/ocm-cap-sflight
+          - name: app
+            value: travel-processor-srv
+          - name: ocm.software/platform
+            value: linux/amd64
+      - name: travel-processor-ui-sbom
+        version: 0.1.0
+        type: sbom
+        relation: local
+        input:
+          type: file
+          path: ./sbom/cap_sflight_srv.cyclonedx.json
+          mediaType: application/json

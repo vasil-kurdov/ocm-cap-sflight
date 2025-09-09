@@ -1,0 +1,27 @@
+version: "3.9"
+
+services:
+  backend:
+    image: ghcr.io/vasil-kurdov/sflight-travel-processor-srv:0.1.0
+    container_name: sflight-backend
+    ports:
+      - "4004:4004"
+#    environment:
+    # add your app env vars here as needed
+    # JAVA_OPTS: "-Xms256m -Xmx512m"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:4004/health || exit 1"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  ui:
+    image: ghcr.io/vasil-kurdov/sflight-travel-processor-ui:0.1.1
+    container_name: sflight-ui
+    depends_on:
+      - backend
+    environment:
+      BACKEND_HOST: backend
+      BACKEND_PORT: "4004"
+    ports:
+      - "8080:80"

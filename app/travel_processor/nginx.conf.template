@@ -1,0 +1,33 @@
+server {
+  listen 8080;
+  server_name _;
+  root /usr/share/nginx/html;
+  index index.html;
+
+  location / {
+    try_files $uri $uri/ /index.html;
+  }
+
+  # App 1
+  location /travel_processor/ {
+    try_files $uri $uri/ /travel_processor/index.html;
+  }
+  # App 2
+  location /travel_analytics/ {
+    try_files $uri $uri/ /travel_analytics/index.html;
+  }
+
+  location /processor/ {
+    proxy_pass http://$BACKEND_HOST:$BACKEND_PORT/processor/;
+    proxy_http_version 1.1;
+    proxy_set_header Host $host;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+  }
+
+  location /odata/ {
+    proxy_pass http://$BACKEND_HOST:$BACKEND_PORT/odata/;
+    proxy_http_version 1.1;
+    proxy_set_header Host $host;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+  }
+}
