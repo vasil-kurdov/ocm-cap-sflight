@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+      app: sflight-travel-processor-ui
+  name: sflight-travel-processor-ui
+spec:
+  selector:
+    matchLabels:
+      app: sflight-travel-processor-ui
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: sflight-travel-processor-ui
+    spec:
+      imagePullSecrets:
+        - name: regcred
+      containers:
+        - name: sflight-travel-processor-ui
+          image: ghcr.io/vasil-kurdov/sflight-travel-processor-ui:0.1.1@sha256:ea7a74ee1a1970cfadde4315520da418f6e0e786b056f3b588ecef43575cc817
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: sflight-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: sflight-travel-processor-ui
+  name: sflight-travel-processor-ui
+spec:
+  selector:
+    app: sflight-travel-processor-ui
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+  type: ClusterIP

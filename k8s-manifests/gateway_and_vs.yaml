@@ -1,0 +1,50 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  labels:
+    app: ocm-cap-sflight
+  name: ocm-cap-sflight-gateway
+  annotations:
+    cert.gardener.cloud/dnsnames: "*.ocm-explore.srmdev.shoot.canary.k8s-hana.ondemand.com"
+    cert.gardener.cloud/purpose: managed
+spec:
+  selector:
+    istio: ingressgateway # use Istio default gateway implementation
+  servers:
+    - port:
+        number: 80
+        name: http
+        protocol: HTTP
+      hosts:
+        - "ocm-cap-sflight.ocm-explore.srmdev.shoot.canary.k8s-hana.ondemand.com"
+    - port:
+        number: 443
+        name: https
+        protocol: HTTPS
+      hosts:
+        - "ocm-cap-sflight.ocm-explore.srmdev.shoot.canary.k8s-hana.ondemand.com"
+      tls:
+        credentialName: cert-ocm-cap-sflight
+        mode: SIMPLE
+---
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  labels:
+    app: ocm-cap-sflight
+  name: ocm-cap-sflight-vs
+spec:
+  hosts:
+    - ocm-cap-sflight.ocm-explore.srmdev.shoot.canary.k8s-hana.ondemand.com
+  gateways:
+    - ocm-cap-sflight-gateway
+  http:
+    - name: "reviews-v1-routes"
+      match:
+        - uri:
+            prefix: "/"
+      route:
+        - destination:
+            host: sflight-travel-processor-ui.default.svc.cluster.local
+            port:
+              number: 80

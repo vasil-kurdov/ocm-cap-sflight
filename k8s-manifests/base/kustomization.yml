@@ -1,0 +1,19 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - cap-sflight-srv.yml
+  - cap-sflight-ui.yml
+configMapGenerator:
+  - name: sflight-config
+    literals:
+      - BACKEND_HOST=sflight-travel-processor-srv.default.svc.cluster.local
+      - BACKEND_PORT=4004
+images:
+  - name: ghcr.io/vasil-kurdov/sflight-travel-processor-ui
+    newName: ghcr.io/vasil-kurdov/sflight-travel-processor-ui
+    newTag: "0.1.1"
+  - name: ghcr.io/vasil-kurdov/sflight-travel-processor-srv
+    newName: ghcr.io/vasil-kurdov/sflight-travel-processor-srv
+    newTag: "0.1.0"
+generatorOptions:
+  disableNameSuffixHash: true

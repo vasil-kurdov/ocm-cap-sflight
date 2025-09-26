@@ -1,0 +1,9 @@
+apiVersion: cert.gardener.cloud/v1alpha1
+kind: Certificate
+metadata:
+  name: cert-ocm-cap-sflight
+  namespace: istio-system
+spec:
+  dnsNames:
+    - ocm-cap-sflight.ocm-explore.srmdev.shoot.canary.k8s-hana.ondemand.com
+  secretName: cert-ocm-cap-sflight

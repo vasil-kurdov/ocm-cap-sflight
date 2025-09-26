@@ -1,0 +1,52 @@
+# component_version.yaml
+apiVersion: delivery.ocm.software/v1alpha1
+kind: ComponentVersion
+metadata:
+  name: cap-sflight
+  namespace: ocm-system
+spec:
+  interval: 10m0s
+  component: ocm.software/cap-sflight
+  version:
+    semver: "0.1.1"
+  repository:
+    url: ghcr.io/vasil-kurdov
+    secretRef:
+      name: regcred
+  verify:
+    - name: btp-srm
+      publicKey:
+        value: LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUlJQklqQU5CZ2txaGtpRzl3MEJBUUVGQUFPQ0FROEFNSUlCQ2dLQ0FRRUF2ait1M05WbHk5QkxQck8rWU95bApEUjIvRytvNTlQYjQrcW5HUkVUMk1iRXRuRmk5bGJHMjB1aW1nY0NYMk1FSHBUTzdhdkozL2YybVBvc0pONWV3Cm42UW44Q3BPSWZQcWkvVTlBUkJvQU1lTysyamxlcC91QlV4akJvWTJxL3VyQkJnSW1OdnFzVUc4T012Q2cwaEcKSzhabldxYTh1Qy8zRHRWQ1FHeFN0YjFpem5LWCsvR0VjWkViVTZRVG5LcmpaMHVxU0ZlaHZMa3JUdi9UMVVPNgpJUm1oWEx2Ymh0dUt1MjlOTkN2K0p4YitBYnllWURYZm9UbDU1ZElrUFVMMEZIYUdYVEdUQ1l0K280Tk1wWEZFClVVa3MzQUxVQi9weHZkOFJTZGxrMy9FQ0tzNUJyT2ptbkpCVnJRNDZBL0RuQkx0UEFPUVN0RC9YbUErbDUwK3EKTXdJREFRQUIKLS0tLS1FTkQgUFVCTElDIEtFWS0tLS0tCg==
+#        secretRef:
+#          name: ocm-trust-bundle
+---
+apiVersion: delivery.ocm.software/v1alpha1
+kind: FluxDeployer
+metadata:
+  name: cap-sflight
+  namespace: ocm-system
+spec:
+  interval: 10m0s
+  sourceRef:
+    apiVersion: delivery.ocm.software/v1alpha1
+    kind: Resource
+    name: cap-sflight-deployment
+  kustomizationTemplate:
+    path: ./
+    prune: true
+    targetNamespace: default
+---
+apiVersion: delivery.ocm.software/v1alpha1
+kind: Resource
+metadata:
+  name: cap-sflight-deployment
+  namespace: ocm-system
+spec:
+  interval: 10m0s
+  sourceRef:
+    apiVersion: delivery.ocm.software/v1alpha1
+    kind: ComponentVersion
+    name: cap-sflight
+    namespace: ocm-system
+    resourceRef:
+      name: cap-sflight-manifests

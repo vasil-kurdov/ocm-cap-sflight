@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+      app: sflight-travel-processor-srv
+  name: sflight-travel-processor-srv
+spec:
+  selector:
+    matchLabels:
+      app: sflight-travel-processor-srv
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: sflight-travel-processor-srv
+    spec:
+      imagePullSecrets:
+        - name: regcred
+      containers:
+        - name: sflight-travel-processor-srv
+          image: ghcr.io/vasil-kurdov/sflight-travel-processor-srv:0.1.0@sha256:1f7bc684b1962ac03f2740882cbd95187104c1f3b1b30eb0b15101be910dea77
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 4004
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: sflight-travel-processor-srv
+  name: sflight-travel-processor-srv
+spec:
+  selector:
+    app: sflight-travel-processor-srv
+  ports:
+    - name: http
+      port: 4004
+      targetPort: 4004
+  type: ClusterIP

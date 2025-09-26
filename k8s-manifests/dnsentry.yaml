@@ -1,0 +1,12 @@
+apiVersion: dns.gardener.cloud/v1alpha1
+kind: DNSEntry
+metadata:
+  annotations:
+    # Let Gardener manage this DNS entry.
+    dns.gardener.cloud/class: garden
+  name: ocm-cap-sflight
+spec:
+  dnsName: ocm-cap-sflight.ocm-explore.srmdev.shoot.canary.k8s-hana.ondemand.com
+  targets:
+    - 104.155.119.1
+  ttl: 300
